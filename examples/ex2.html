@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../modules/grid.js"></script>
+</head>
+<body>
+    <canvas id="grid"></canvas>
+    <script>
+        var g = new Grid('grid', {
+            rows:2,
+            cols:2,
+            images: {
+                skull: "../gfx/skull.png",
+                bomb: "../gfx/bomb.png",
+            },
+            mouseEvent: function(cell) {
+                if (cell.icon)
+                    g.show(cell.row, cell.col);
+            }
+        });
+
+        g.set(0, 0, {icon:'skull'});
+        g.set(1, 1, {icon:'bomb'});
+    </script>
+</body>
+</html>

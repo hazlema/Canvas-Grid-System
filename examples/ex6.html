@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../modules/grid.js"></script>
+</head>
+<body>
+    <canvas id="grid"></canvas>
+    <script>
+        var g = new Grid('grid', {
+            rows:5,
+            cols:5,
+            images: {
+                1: '../gfx/1.png',
+                2: '../gfx/2.png',
+                3: '../gfx/3.png',
+                4: '../gfx/4.png',
+                5: '../gfx/5.png',
+                6: '../gfx/6.png',
+                7: '../gfx/7.png',
+                8: '../gfx/8.png'
+            }
+        });
+
+        var random = function(max) {
+            return parseInt(Math.random() * max);
+        }
+
+        for (var row = 0; row <= 4; row++) {
+            for (var col = 0; col <= 4; col++) {
+                var rand = String(random(7)+1);
+                console.log(row, col, rand);
+
+                g.show(row, col, {icon:rand});
+            }
+        }
+    </script>
+</body>
+</html>
