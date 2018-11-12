@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../modules/grid.js"></script>
+</head>
+<body>
+    <canvas id="grid"></canvas>
+    <script>
+        Array.prototype.remove = function(search) {
+            var src    = this;
+            var retval = [];
+
+            for (var ele of src) {
+                if (!search.includes(ele)) retval.push(ele);
+            }
+
+            return retval;
+        }
+
+        var g = new Grid('grid', {
+            rows:3,
+            cols:3,
+            extraCellData: {locked:false},
+            images: {
+                X: '../gfx/X.png',
+                O: '../gfx/O.png'
+            },
+            mouseEvent: function(cell) {
+                g.cursor( cell.locked ? "not-allowed" : "pointer");
+
+                if (cell.action == 'click' && cell.locked == false) {
+                    g.show(cell.row, cell.col, {icon:'X',locked:true});
+                    aiMove(g.find());
+                }
+            }
+        });
+
+        // Build board Array with g.find();
+        function renderBoard(){
+            var board = [];
+            var gridData = g.find();
+
+            for (var count = 0; count <= 8; count++) {
+                if (gridData[count].icon == false){
+                    board.push(count);
+                } else {
+                    board.push(gridData[count].icon);
+                }
+            }
+
+            return board;
+        }
+
+        function aiMove() {
+            var board = renderBoard();
+
+            if (isWin(board, "X")) {
+                alert('Win');
+            } else if (g.count('icon', ['X', 'O']) > 8) {
+                alert('tie');
+            } else {
+                // Get AI Move
+                var index = minimax(board, "O").index;
+                var row = Math.floor(index / 3);
+                var col = Math.floor(index % 3);
+                g.show(row, col, {icon:'O',locked:true});
+            }
+
+            var board = renderBoard();
+            if (isWin(board, "O")) {
+                alert('Loose');
+            }
+        }
+
+        // AI Stuff
+        //----------------------------------------
+
+        function minimax(reboard, player) {
+            let array = reboard.remove(['X', 'O']);
+            var human = 'X';
+            var ai = 'O';
+
+            // If this board combo is a win
+            // then return a score
+            if (isWin(reboard, human)) {
+                return { score: -10 };
+            } else if (isWin(reboard, ai)) {
+                return { score: 10 };
+            } else if (array.length === 0) {
+                return { score: 0 };
+            }
+
+            var moves = [];
+
+            // Add player to each available slot then recheck
+            for (var i of array) {
+                var move = {};
+                move.index = reboard[i];
+                reboard[i] = player;
+
+                // If player is 'X' check 'O'
+                var g = minimax(reboard, (player == 'X') ? "O" : "X");
+                move.score = g.score;
+
+                reboard[i] = move.index;
+                moves.push(move);
+            }
+
+            var bestMove;
+            if (player === ai) {
+                var bestScore = -1000;
+                for (var i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                var bestScore = 10000;
+                for (var i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+
+            return moves[bestMove];
+        }
+
+        // Did someone win?
+        function isWin(b, p) {
+            return ((b[0] == p && b[1] == p && b[2] == p) ||
+                    (b[3] == p && b[4] == p && b[5] == p) ||
+                    (b[6] == p && b[7] == p && b[8] == p) ||
+                    (b[0] == p && b[3] == p && b[6] == p) ||
+                    (b[1] == p && b[4] == p && b[7] == p) ||
+                    (b[2] == p && b[5] == p && b[8] == p) ||
+                    (b[0] == p && b[4] == p && b[8] == p) ||
+                    (b[2] == p && b[4] == p && b[6] == p) ) ? true : false;
+        }
+    </script>
+</body>
+</html>

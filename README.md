@@ -27,6 +27,7 @@
     - [Advanced](#advanced)
         - [Example 6](#example-6)
         - [Example 7](#example-7)
+        - [Example 8](#example-8)
         - [More Examples](#more-examples)
 
 # API
@@ -491,6 +492,82 @@ function mouseHandler(cell) {
 
 [Back to top](#canvas-grid-system)
 
+### Example 8
+- Tic Tac Toe vs. AI
+
+![Example 8](assets/ex8.gif)
+
+```javascript
+        Array.prototype.remove = function(search) {
+            var src    = this;
+            var retval = [];
+
+            for (var ele of src) {
+                if (!search.includes(ele)) retval.push(ele);
+            }
+
+            return retval;
+        }
+
+        var g = new Grid('grid', {
+            rows:3,
+            cols:3,
+            extraCellData: {locked:false},
+            images: {
+                X: '../gfx/X.png',
+                O: '../gfx/O.png'
+            },
+            mouseEvent: function(cell) {
+                g.cursor( cell.locked ? "not-allowed" : "pointer");
+
+                if (cell.action == 'click' && cell.locked == false) {
+                    g.show(cell.row, cell.col, {icon:'X',locked:true});
+                    aiMove(g.find());
+                }
+            }
+        });
+
+        // Build board Array with g.find();
+        function renderBoard(){
+            var board = [];
+            var gridData = g.find();
+
+            for (var count = 0; count <= 8; count++) {
+                if (gridData[count].icon == false){
+                    board.push(count);
+                } else {
+                    board.push(gridData[count].icon);
+                }
+            }
+
+            return board;
+        }
+
+        function aiMove() {
+            var board = renderBoard();
+
+            if (isWin(board, "X")) {
+                alert('Win');
+            } else if (g.count('icon', ['X', 'O']) > 8) {
+                alert('tie');
+            } else {
+                // Get AI Move
+                var index = minimax(board, "O").index;
+                var row = Math.floor(index / 3);
+                var col = Math.floor(index % 3);
+                g.show(row, col, {icon:'O',locked:true});
+            }
+
+            var board = renderBoard();
+            if (isWin(board, "O")) {
+                alert('Loose');
+            }
+        }
+
+        // AI Stuff
+        //----------------------------------------
+        // See the examples dir for the rest of the code...
+```
 ### More Examples
 **More Examples in the examples directory**
 
