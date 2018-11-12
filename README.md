@@ -506,17 +506,6 @@ function mouseHandler(cell) {
 ![Example 8](assets/ex8.gif)
 
 ```javascript
-        Array.prototype.remove = function(search) {
-            var src    = this;
-            var retval = [];
-
-            for (var ele of src) {
-                if (!search.includes(ele)) retval.push(ele);
-            }
-
-            return retval;
-        }
-
         var g = new Grid('grid', {
             rows:3,
             cols:3,
@@ -535,12 +524,35 @@ function mouseHandler(cell) {
             }
         });
 
-        // Build board Array with g.find();
+        //----------------------------------------
+        // Helper Functions
+        //----------------------------------------
+
+        Array.prototype.remove = function(search) {
+            var src    = this;
+            var retval = [];
+
+            for (var ele of src) {
+                if (!search.includes(ele)) retval.push(ele);
+            }
+
+            return retval;
+        }
+
+        Array.prototype.maxNdx = function() {
+            return this.indexOf(Math.max.apply(null, this));
+        };
+
+        Array.prototype.minNdx = function() {
+            return this.indexOf(Math.min.apply(null, this));
+        };
+
+        // Convert row / col to a flat array
         function renderBoard(){
-            var board = [];
+            var board    = [];
             var gridData = g.find();
 
-            for (var count = 0; count <= 8; count++) {
+            for (var count=0; count<=8; count++) {
                 if (gridData[count].icon == false){
                     board.push(count);
                 } else {
@@ -551,31 +563,86 @@ function mouseHandler(cell) {
             return board;
         }
 
+        //----------------------------------------
+        // AI Stuff
+        //----------------------------------------
+
         function aiMove() {
             var board = renderBoard();
+            var count = g.count('icon', ['X', 'O']);
 
-            if (isWin(board, "X")) {
-                alert('Win');
-            } else if (g.count('icon', ['X', 'O']) > 8) {
-                alert('tie');
-            } else {
-                // Get AI Move
+            if (isWin(board, "X")) { alert('You Win!'); } else
+            if (count > 8)         { alert('Tie!');     } else {
+                // Calculate AI's Move
                 var index = minimax(board, "O").index;
-                var row = Math.floor(index / 3);
+
+                // Convert index to a row / col format
+                var row = Math.floor(index / 3);  
                 var col = Math.floor(index % 3);
+
                 g.show(row, col, {icon:'O',locked:true});
             }
 
+            // Render the board (again) and check if the AI won
             var board = renderBoard();
-            if (isWin(board, "O")) {
-                alert('Loose');
-            }
+            if (isWin(board, "O")) alert('You Loose!');
         }
 
-        // AI Stuff
-        //----------------------------------------
-        // See the examples dir for the rest of the code...
+        function minimax(reboard, player) {
+            let empty = reboard.remove(['X', 'O']);
+
+            var moves  = [];
+            var scores = [];
+
+            var human = 'X';
+            var ai    = 'O';
+
+            // If this board combo is a win then return a score
+            if (isWin(reboard, human)) { return { score: -10 }; } else 
+            if (isWin(reboard, ai))    { return { score: 10 };  } else
+            if (empty.length === 0)    { return { score: 0 };   }
+
+            // Add player to each available slot then recheck
+            for (var i of empty) {
+                var move = {};
+
+                // Put players marker at this index
+                move.index = reboard[i];
+                reboard[i] = player;
+
+                // If player is 'X' check 'O'
+                var g = minimax(reboard, (player == 'X') ? "O" : "X");
+                move.score = g.score;
+
+                // Change the temp marker back 
+                reboard[i] = move.index;
+                
+                moves.push(move);
+            }
+
+            // Make an array of scores
+            for (var thisMove of moves) scores.push(thisMove.score);
+
+            // Return the highest or lowest score
+            return (player == ai) ? moves[scores.maxNdx()] : moves[scores.minNdx()];
+        }
+
+        // Did someone win?
+        //
+        function isWin(b, p) {
+            return ((b[0] == p && b[1] == p && b[2] == p) ||
+                    (b[3] == p && b[4] == p && b[5] == p) ||
+                    (b[6] == p && b[7] == p && b[8] == p) ||
+                    (b[0] == p && b[3] == p && b[6] == p) ||
+                    (b[1] == p && b[4] == p && b[7] == p) ||
+                    (b[2] == p && b[5] == p && b[8] == p) ||
+                    (b[0] == p && b[4] == p && b[8] == p) ||
+                    (b[2] == p && b[4] == p && b[6] == p) ) ? true : false;
+        }
 ```
+
+[Back to top](#canvas-grid-system)
+
 ### More Examples
 **More Examples in the examples directory**
 
