@@ -33,7 +33,7 @@
 
                 if (cell.action == 'click' && cell.locked == false) {
                     g.show(cell.row, cell.col, {icon:'X',locked:true});
-                    aiMove(g.find());
+                    aiMove();
                 }
             }
         });

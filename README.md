@@ -270,6 +270,7 @@ function mouseHandler(cell) {
 ### Example 1
 - Draws a grid
 - Draws images
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex1.html)
 
 ![Example 1](assets/ex1.png)
 
@@ -292,6 +293,7 @@ function mouseHandler(cell) {
 ### Example 2
 - Same as above
 - Shows the images when you mouseover them
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex2.html)
 
 ![Example 2](assets/ex2.gif)
 
@@ -318,6 +320,7 @@ function mouseHandler(cell) {
 - Same as above
 - Shows the images when you click the cell
 - Changes the mouse cursor
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex3.html)
 
 ![Example 3](assets/ex3.gif)
 
@@ -346,6 +349,7 @@ function mouseHandler(cell) {
 ### Example 4
 - Same as above 
 - Toggles between showing and hiding
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex4.html)
 
 ![Example 4](assets/ex4.gif)
 
@@ -377,6 +381,7 @@ function mouseHandler(cell) {
 ### Example 5
 - Same as above
 - Adds a click counter to each cell
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex5.html)
 
 ![Example 5](assets/ex5.gif)
 
@@ -416,6 +421,7 @@ function mouseHandler(cell) {
 
 ### Example 6
 - Populate the grid with random numbers
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex6.html)
 
 ![Example 6](assets/ex6.png)
 
@@ -452,6 +458,7 @@ function mouseHandler(cell) {
 ### Example 7
 - Same as above
 - When you click on a cell, all the cells with that same number will `show`
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex7.html)
 
 ![Example 7](assets/ex7.gif)
 
@@ -494,6 +501,7 @@ function mouseHandler(cell) {
 
 ### Example 8
 - Tic Tac Toe vs. AI
+- [Live Demo](http://hazlema.us/dist/grid/examples/ex8.html)
 
 ![Example 8](assets/ex8.gif)
 
@@ -522,7 +530,7 @@ function mouseHandler(cell) {
 
                 if (cell.action == 'click' && cell.locked == false) {
                     g.show(cell.row, cell.col, {icon:'X',locked:true});
-                    aiMove(g.find());
+                    aiMove();
                 }
             }
         });
