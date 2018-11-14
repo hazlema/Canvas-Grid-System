@@ -8,10 +8,12 @@
 </head>
 <body>
     <canvas id="grid"></canvas>
+    <div id="status"></div>
     <script>
         var g = new Grid('grid', {
             rows:10,
             cols:10,
+            extraCellData: {locked: false},
             background: '#EEE',
             images: {
                 p1: '../gfx/red.png',
@@ -22,13 +24,27 @@
                 var ai     = "p2";
 
                 var isMove = validMove(cell.row, cell.col, player)
-                g.cursor( isMove.result == true ? "pointer" : "not-allowed");
+                g.cursor( isMove.result == true && cell.locked == false ? "pointer" : "not-allowed");
 
                 if (cell.action == 'click' && isMove.result == true) {
                     g.show(cell.row, cell.col, {icon:player});
                     executeFlips(isMove.value);
-                    aiMove();
+                    
+                    if (moveExists(ai)) 
+                        aiMove(); 
+                    else {
+                        g.apply("locked", true);
+                        alert('Game Over, No moves left for AI!');
+                    
+                    }
+                    
+                    if (! moveExists(player)) {
+                        g.apply("locked", true);
+                        alert('Game Over, No moves left for Player 1!');
+                    }
                 }
+
+                updateStatus();
             }
         });
 
@@ -36,6 +52,30 @@
         g.show(4, 5, {icon:'p2'});
         g.show(5, 4, {icon:'p2'});
         g.show(5, 5, {icon:'p1'});
+        updateStatus();
+
+        function moveExists(player) {
+            for (var row=0;row<10;row++) {
+                for (var col=0;col<10;col++) {
+                    if (validMove(row, col, player).result == true) return true;
+                }
+            }
+
+            return false;
+        }
+
+        function updateStatus() {
+            var data = g.find();
+            var p1 = 0;
+            var p2 = 0;
+
+            for (var thisCell of data) {
+                if (thisCell.icon == "p1") p1++;
+                if (thisCell.icon == "p2") p2++;
+            }
+
+            document.getElementById("status").innerHTML = `Human: ${p1}, AI: ${p2}`; 
+        }
 
         function aiMove() {
             var ai    = "p2";
