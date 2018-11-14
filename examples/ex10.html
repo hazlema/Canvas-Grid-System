@@ -12,6 +12,16 @@
             color: white;
             padding:10px;
             border-radius: 10px;
+            background: #959595;
+            background: -moz-linear-gradient(-45deg, #959595 0%, #0d0d0d 46%, #010101 50%, #0a0a0a 53%, #4e4e4e 76%, #383838 87%, #1b1b1b 100%);
+            background: -webkit-linear-gradient(-45deg, #959595 0%,#0d0d0d 46%,#010101 50%,#0a0a0a 53%,#4e4e4e 76%,#383838 87%,#1b1b1b 100%);
+            background: linear-gradient(135deg, #959595 0%,#0d0d0d 46%,#010101 50%,#0a0a0a 53%,#4e4e4e 76%,#383838 87%,#1b1b1b 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#959595', endColorstr='#1b1b1b',GradientType=1 );            
+            border: 2px solid black;
+        }
+        canvas {
+            border-radius: 10px;
+            border: 1px solid black;
         }
         .digit {
             float: left;
@@ -47,8 +57,8 @@
             cellWidth:25,
             background: '#eee',
             images: {
-                0: "../gfx/empty.png",
-                1: "../gfx/blue.png"
+                0: "../gfx/dot-off.png",
+                1: "../gfx/dot.png"
             }
         });
 
