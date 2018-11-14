@@ -81,7 +81,7 @@ class Grid {
 
         //#region Compute grid size
         this.width  = (this.cellWidth * this.cols) + this.cols + 1;
-        this.height = (this.cellHeight * this.cols) + this.cols + 1;
+        this.height = (this.cellHeight * this.rows) + this.rows + 1;
         //#endregion
 
         //#region Mouse events

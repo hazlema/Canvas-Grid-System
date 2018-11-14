@@ -647,5 +647,6 @@ function mouseHandler(cell) {
 **More Examples in the examples directory**
 
 - [Example 9: Othello Live Demo](http://hazlema.us/dist/grid/examples/ex9.html)
+- [Example 10: Binary Clock Live Demo](http://hazlema.us/dist/grid/examples/ex10.html)
 
 [Back to top](#canvas-grid-system)

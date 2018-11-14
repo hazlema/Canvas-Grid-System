@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../modules/grid.js"></script>
+    <style>
+        .container {
+            float: left;
+            background-color: #222;
+            color: white;
+            padding:10px;
+            border-radius: 10px;
+        }
+        .digit {
+            float: left;
+            height:25px;
+            width:26px;
+            line-height:25px;
+            text-align: center;
+            vertical-align: middle;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: bolder;
+            font-size: 17px;
+        }
+        </style>
+</head>
+<body>
+    <h4>24 Hour Binary Clock</h4>
+    <div class="container">
+        <canvas id="grid"></canvas>
+        <div class="time">
+            <div id="t0" class="digit">0</div>
+            <div id="t1" class="digit">0</div>
+            <div id="t2" class="digit">0</div>
+            <div id="t3" class="digit">0</div>
+            <div id="t4" class="digit">0</div>
+            <div id="t5" class="digit">0</div>
+        </div>
+    </div>
+    <script>
+        var g = new Grid('grid', {
+            rows:4,
+            cols:6,
+            cellHeight:25,
+            cellWidth:25,
+            background: '#eee',
+            images: {
+                0: "../gfx/empty.png",
+                1: "../gfx/blue.png"
+            }
+        });
+
+        function updateTime() {
+            var date = new Date();
+
+            var hours = date.getHours().toString().padStart(2, "0");
+            var min   = date.getMinutes().toString().padStart(2, "0");
+            var sec   = date.getSeconds().toString().padStart(2, "0");
+            var time  = hours + min + sec;
+
+            binTime = [ 
+                parseInt(time[0]).toString(2), 
+                parseInt(time[1]).toString(2),
+                parseInt(time[2]).toString(2),
+                parseInt(time[3]).toString(2),
+                parseInt(time[4]).toString(2),
+                parseInt(time[5]).toString(2)
+            ];
+
+            console.log(binTime);
+            for (var col in binTime) {
+                var sNum = String(binTime[col]).padStart(4, "0");
+                document.getElementById("t" + col).innerHTML = time[col];
+                var row = 0;
+                for (var count=0;count<4;count++) {
+                    g.show(row+count, col, {icon:sNum[count]});
+                }
+            }
+            console.log(binTime);
+        }
+
+    setInterval(function() {
+        updateTime();
+    }, 1000);
+    </script>
+</body>
+</html>
