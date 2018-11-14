@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../modules/grid.js"></script>
+</head>
+<body>
+    <canvas id="grid"></canvas>
+    <script>
+        var g = new Grid('grid', {
+            rows:10,
+            cols:10,
+            background: '#EEE',
+            images: {
+                p1: '../gfx/red.png',
+                p2: '../gfx/blue.png'
+            },
+            mouseEvent: function(cell) {
+                var player = "p1";
+                var ai     = "p2";
+
+                var isMove = validMove(cell.row, cell.col, player)
+                g.cursor( isMove.result == true ? "pointer" : "not-allowed");
+
+                if (cell.action == 'click' && isMove.result == true) {
+                    g.show(cell.row, cell.col, {icon:player});
+                    executeFlips(isMove.value);
+                    aiMove();
+                }
+            }
+        });
+
+        g.show(4, 4, {icon:'p1'});
+        g.show(4, 5, {icon:'p2'});
+        g.show(5, 4, {icon:'p2'});
+        g.show(5, 5, {icon:'p1'});
+
+        g.show(6, 5, {icon:'p2'});
+        g.show(6, 6, {icon:'p1'});
+        g.show(8, 5, {icon:'p2'});
+
+        g.show(7, 3, {icon:'p1'});
+        g.show(7, 4, {icon:'p2'});
+        g.show(7, 5, {icon:'p2'});
+        g.show(7, 6, {icon:'p2'});
+        g.show(7, 7, {icon:'p2'});
+        g.show(7, 8, {icon:'p2'});
+
+        function aiMove() {
+            var ai    = "p2";
+            var found = null;
+
+            for (var row=0;row<10;row++) {
+                for (var col=0;col<10;col++) {
+                    var scan = validMove(row, col, ai);
+         
+                    if (scan.result == true) {
+                        if (found != null) {
+                            var fSize = found.N + found.E + found.S + found.W;
+                            var sSize = scan.value.N + scan.value.E + scan.value.S + scan.value.W;
+
+                            if (sSize > fSize) found = scan.value;
+                        } else found = scan.value;
+                    }
+                }
+            }
+
+            //console.log(found);
+            g.show(found.row, found.col, {icon:found.player});
+            executeFlips(found);
+        }
+
+        function validMove(row, col, player) { 
+            
+            if (g.get(row, col).icon != false)
+                return {result:false, value:null}
+
+            var scan = { 
+                player: player,
+                row: row,
+                col: col,
+                N: distanceFlipScan(row, col, 'N', player), 
+                E: distanceFlipScan(row, col, 'E', player), 
+                S: distanceFlipScan(row, col, 'S', player), 
+                W: distanceFlipScan(row, col, 'W', player)
+            };
+
+            if (scan.N == 0 && scan.E == 0 && scan.S == 0 && scan.W == 0) {
+                return {result:false, value:scan};
+            } else {
+                return {result:true, value:scan};
+            }
+        }
+
+        distanceFlipScan = function(row, col, direction, player) {
+            var opponent = player == 'p1' ? 'p2' : 'p1';
+            var thisRow  = row;
+            var thisCol  = col;
+            var distance = 0;
+            var exit     = false;
+
+            do {
+                switch (direction) {
+                    case 'N': thisRow -= 1; distance += 1; break;
+                    case 'E': thisCol += 1; distance += 1; break;
+                    case 'S': thisRow += 1; distance += 1; break;
+                    case 'W': thisCol -= 1; distance += 1; break;
+                }
+
+                if (thisRow < 0 || thisRow >= 10 || thisCol < 0 || thisCol >= 10) {
+                    distance = 0;
+                } else {
+                    if (g.get(thisRow, thisCol).icon !== opponent) {
+                        if (g.get(thisRow, thisCol).icon !== player)
+                            distance = 0;
+                        else
+                            distance -= 1;
+
+                        exit = true;
+                    };
+                }
+
+            } while ((distance != 0) && (exit == false));
+
+            return distance;
+        }
+
+        function executeFlips(data) {
+            for (var direction of ['N', 'E', 'S', 'W']) {
+                if (data[direction] != 0) {
+                    for (var count=1;count <= data[direction];count++) {
+                        switch (direction) {
+                            case 'N': g.show(data.row - count, data.col, {icon:data.player}); break;
+                            case 'S': g.show(data.row + count, data.col, {icon:data.player}); break;
+                            case 'E': g.show(data.row, data.col + count, {icon:data.player}); break;
+                            case 'W': g.show(data.row, data.col - count, {icon:data.player}); break;
+                        }
+                    }
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

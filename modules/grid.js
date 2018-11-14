@@ -116,7 +116,11 @@ class Grid {
      * @return {object} - cell
      */
     get(row, col) {
-        return this.gridData[row][col];
+        if (row < 0 || row >= this.rows || col < 0 || col >= this.cols) {
+            return false;
+        } else {
+            return this.gridData[row][col];
+        }
     }
 
     /**
